@@ -6,7 +6,7 @@ BLUE=(0,0,255)
 
 ship=Actor('ship')
 bug=Actor('enemy')
-ship.pos(WIDTH//2,HEIGHT-50)
+ship.pos=(WIDTH//2,HEIGHT-50)
 speed=20
 
 bullets=[]
@@ -28,9 +28,54 @@ def on_key_down(key):
         bullets[-1].y=ship.y-50
 
 def update():
-    pass
+    global score
+    #to make the ship move left
+    if keyboard.left:
+        ship.x=ship.x-10
+        if ship.x <= 0:
+            ship.x = 0
+
+    #to make the ship move right
+    elif keyboard.right:
+        ship.x += 10
+        if ship.x >= WIDTH:
+            ship.x = WIDTH
+
+    #to fire bullets
+    for bullet in bullets:
+        if bullet.y <= 0:
+            bullets.remove(bullet)
+        else:
+            bullet.y -= 10
+
+    for enemy in enemies:
+        enemy.y += 5
+        if enemy.y >= HEIGHT:
+            enemy.y= -100
+            enemy.x=random.randint(10,WIDTH-10)
+        
+        #checking for the collision
+        for bullet in bullets:
+            if enemy.colliderect(bullet):
+                score += 100
+                bullets.remove(bullet)
+                enemies.remove(enemy)
+
+
 
 def draw():
-    pass
+    screen.clear()
+    screen.fill(BLUE)
+    
+    for bullet in bullets:
+        bullet.draw()
+        
+    for enemy in enemies:
+        enemy.draw()
+    ship.draw()
+    display_score()
+
+
+
 
 pgzrun.go()
