@@ -1,5 +1,5 @@
 import pgzrun, random
-WIDTH=700
+WIDTH=900
 HEIGHT=600
 TITLE="Galaga game"
 BLUE=(0,0,255)
@@ -12,10 +12,14 @@ speed=20
 bullets=[]
 enemies=[]
 
-enemies.append(Actor('enemy'))
-enemies[-1].x=100
-enemies[-1].y=-100
+for x in range(10):
+    enemies.append(Actor('enemy'))
+
+    enemies[-1].x=100 + 70 * x
+    enemies[-1].y=-30
 score=0
+direction=1
+
 
 
 def display_score():
@@ -29,6 +33,9 @@ def on_key_down(key):
 
 def update():
     global score
+    global direction
+    movedown=False
+
     #to make the ship move left
     if keyboard.left:
         ship.x=ship.x-10
@@ -47,17 +54,23 @@ def update():
             bullets.remove(bullet)
         else:
             bullet.y -= 10
+    
+    if (len(enemies) >0) and (enemies[0].x<20 or enemies[-1].x> WIDTH-20):
+        movedown=True
+        direction= direction*(-1)
+        
 
     for enemy in enemies:
-        enemy.y += 5
-        if enemy.y >= HEIGHT:
-            enemy.y= -100
-            enemy.x=random.randint(10,WIDTH-10)
+        enemy.x += 5* direction
+        if movedown==True:
+            enemy.y += 5
+        
         
         #checking for the collision
         for bullet in bullets:
             if enemy.colliderect(bullet):
                 score += 100
+                sounds.eep.play()
                 bullets.remove(bullet)
                 enemies.remove(enemy)
 
