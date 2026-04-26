@@ -96,17 +96,30 @@ def on_mouse_down(pos):
             if 'paper_bag' in item.image:
                 handle_game_complete()
             else:
-                game_over()
+                handle_game_over()
             
 def handle_game_complete():
-    pass
+    global game_complete, current_level, items_list, animations_list
+    stop_animations(animations_list)
+    if current_level == FINAL_LEVEL:
+        game_complete=True
+    else:
+        current_level+=1
+        items_list=[]
+        animations_list=[]
+        
+
 
 
 def stop_animations(animation_to_stop):
-    pass
+    for animation in animation_to_stop:
+        if animation.running == True:
+            animation.stop()
+
 
 def display_message(heading_text,sub_heading_text):
-    pass
+    screen.draw.text(heading_text,fontsize=60,center=CENTRE,color='black')
+    screen.draw.text(sub_heading_text,fontsize=35,center=(CENTRE_X,CENTRE_Y+40),color='brown')
 
 
 
